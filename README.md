@@ -33,12 +33,22 @@ Run to control network topology:
 ansible-playbook site-playbook.yaml -i inventory.yaml -e @vars_secrets.yaml
 ```
 
-## 📁 Repository Structure
+## 📂 Project Structure
+
+```text
 net-as-code/
 ├── .github/
 │   └── workflows/
-│       └── netdevops.yml      # Pipeline GitHub Actions (CI/CD).
-├── inventory.yaml             # Inventory with defined topology.
-├── site-playbook.yaml         # Mean playbook (orchestrator).
-├── ansible.cfg                # Local Ansible configuration.
-└── vars_secrets.yaml          # ENCRYPTED file with Ansible Vault
+│       └── netdevops.yml     # GitHub Actions pipeline (CI/CD)
+├── inventory.yaml            # Inventory with defined network topology
+├── site-playbook.yaml        # Main playbook (orchestrator)
+├── ansible.cfg               # Local Ansible configuration
+└── vars_secrets.yaml         # ENCRYPTED file with Ansible Vault
+```
+
+### 🛠️ Key Components
+
+* **`netdevops.yml`**: Automates linting tests and deployment tasks to network devices on every *push* or *Pull Request*.
+* **`inventory.yaml`**: Contains hosts grouped by roles or locations, along with their connection parameters.
+* **`site-playbook.yaml`**: The main entry point to run configurations across the infrastructure.
+* **`vars_secrets.yaml`**: Protects sensitive credentials. It requires `--ask-vault-pass` or a secret key during pipeline execution to decrypt.
