@@ -1,0 +1,47 @@
+---
+# -------------------------------------------------------------
+# SECCIÓN 1: Gestión y verificación de usuarios/servidores
+# -------------------------------------------------------------
+- name: Host Play
+  hosts: myhosts
+  gather_facts: true
+
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+
+    - name: Print message
+      ansible.builtin.debug:
+        msg: "Hello world to Hosts"
+
+# -------------------------------------------------------------
+# SECCIÓN 2: Gestión de infraestructura y Open vSwitch
+# -------------------------------------------------------------
+- name: Network Device Play
+  hosts: netdevices
+  gather_facts: true
+
+  vars:
+    bridge_name: "{{ inventory_hostname }}"
+
+  tasks:
+    - name: Verificar estado de Open vSwitch
+      openvswitch.openvswitch.openvswitch_db:
+        state: read
+        table: Open_vSwitch
+        record: .
+        col: next_cfg
+      register: ovs_status
+
+    - name: Mostrar configuración de OVS
+      ansible.builtin.debug:
+        var: ovs_status
+
+    - name: Capturar los dump-flows vigentes del bridge específico
+      ansible.builtin.command: "ovs-ofctl dump-flows {{ bridge_name }} -O OpenFlow13"
+      register: ovs_flows
+      changed_when: false
+
+    - name: Mostrar los dump-flows en la terminal del host de control
+      ansible.builtin.debug:
+        msg: "Flujos para el switch {{ inventory_hostname }} (Bridge: {{ bridge_name }}): {{ ovs_flows.stdout.splitlines() }}"

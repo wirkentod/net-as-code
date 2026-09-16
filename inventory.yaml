@@ -1,0 +1,36 @@
+all:
+  children:
+    # group to admin users
+    myhosts:
+      hosts:
+        h2:
+          ansible_host: 10.0.0.2
+          ansible_user: ubuntu
+        h3:
+          ansible_host: 10.0.0.3
+          ansible_user: ubuntu
+      vars:
+        ansible_connection: ssh
+        ansible_become: true
+        ansible_become_method: sudo
+        # link the variables created in the encrypted file
+        ansible_password: "{{ pass_host_ssh }}"
+        ansible_become_password: "{{ pass_host_sudo }}"
+
+    # group to admin net-devices
+    netdevices:
+      hosts:
+        sw1:
+          ansible_host: 192.168.0.11
+          ansible_user: ubuntu
+        sw2:
+          ansible_host: 192.168.0.12
+          ansible_user: ubuntu             # El usuario que nos mostraste en el prompt
+      vars:
+        ansible_connection: ssh
+        # sudo for commands
+        ansible_become: true
+        ansible_become_method: sudo
+        # link the variables created in the encrypted file
+        ansible_password: "{{ pass_sw_ssh }}"
+        ansible_become_password: "{{ pass_sw_enable }}"

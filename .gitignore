@@ -1,0 +1,3 @@
+# Block credentials and secrets
+vars_secrets.yaml
+.ansible_vault_pass
