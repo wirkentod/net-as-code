@@ -26,16 +26,13 @@
 
   tasks:
     - name: Verificar estado de Open vSwitch
-      openvswitch.openvswitch.openvswitch_db:
-        state: read
-        table: Open_vSwitch
-        record: .
-        col: next_cfg
-      register: ovs_status
+      ansible.builtin.command: "ovs-vsctl --version"
+      register: ovs_version
+      changed_when: false
 
     - name: Mostrar configuración de OVS
       ansible.builtin.debug:
-        var: ovs_status
+        var: ovs_version
 
     - name: Capturar los dump-flows vigentes del bridge específico
       ansible.builtin.command: "ovs-ofctl dump-flows {{ bridge_name }} -O OpenFlow13"
