@@ -54,3 +54,29 @@ if [ ! -f "$VAULT_FILE" ]; then
 else
     echo "The file '$VAULT_FILE' already exists."
 fi
+
+# Dynamic Vault Encryption via Argument
+
+# Error Control: Ensure the user provided a target file argument
+if [ $# -eq 0 ]; then
+    echo "Error: Missing target file argument." >&2
+    echo "Usage: $0 <filename.yaml>" >&2
+    exit 1
+fi
+
+SECRETS_FILE="$1"
+
+# Error Control: Verify the specified file actually exists
+if [ ! -f "$SECRETS_FILE" ]; then
+    echo "Error: The file '$SECRETS_FILE' does not exist." >&2
+    exit 1
+fi
+
+# Conditional execution: Encrypt only if the file is currently plaintext
+if head -n 1 "$SECRETS_FILE" | grep -q "\$ANSIBLE_VAULT"; then
+    echo "The file '$SECRETS_FILE' is already encrypted."
+else
+    echo "Encrypting '$SECRETS_FILE' using '$VAULT_FILE'..."
+    ansible-vault encrypt "$SECRETS_FILE" --vault-password-file "$VAULT_FILE"
+    echo "'$SECRETS_FILE' encrypted successfully."
+fi
