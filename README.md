@@ -1,6 +1,6 @@
 # Control Network as Code
 
-This project explore the control of a network as code.
+This project explores network control as code.
 
 Quick start
 
@@ -11,22 +11,21 @@ git clone https://github.com/wirkentod/net-as-code.git
 cd net-as-code
 ```
 
-2. **Create a virtual environment and install dependencies:**
+2. **Run the setup script**
+You need to grant execution permissions to the script before running it for the first time:
 
 ```bash
-# On macOS/Linux:
-python -m venv .venv
-source .venv/bin/activate
-
-# On Windows (PowerShell):
-.venv\Scripts\activate
-
-# Install requirements
-pip install -r requirements.txt
+chmod +x setup.sh
+./setup.sh
 ```
 
-## 📊 Command-Line Interface (CLI) Usage
-3. Run the CLI:
+3. **Activate the environment**
+Once the setup finishes successfully, activate your new Python virtual environment:
+```bash
+source .venv/bin/activate
+```
+
+4. **Run Playbook**
 
 Run to control network topology:
 
