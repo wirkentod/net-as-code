@@ -2,3 +2,6 @@
 vars_secrets.yaml
 .ansible_vault_pass
 echo ".ansible_vault_pass" >> .gitignore
+# Libs and virtual env
+.ansible/
+.venv/
