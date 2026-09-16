@@ -77,6 +77,6 @@ if head -n 1 "$SECRETS_FILE" | grep -q "\$ANSIBLE_VAULT"; then
     echo "The file '$SECRETS_FILE' is already encrypted."
 else
     echo "Encrypting '$SECRETS_FILE' using '$VAULT_FILE'..."
-    ansible-vault encrypt "$SECRETS_FILE" --vault-password-file "$VAULT_FILE"
+    ansible-vault encrypt "$SECRETS_FILE" --encrypt-vault-id=default --vault-password-file "$VAULT_FILE"
     echo "'$SECRETS_FILE' encrypted successfully."
 fi

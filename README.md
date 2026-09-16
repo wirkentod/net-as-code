@@ -12,26 +12,21 @@ cd net-as-code
 ```
 
 2. **Update var secrets**
+
 You need to update the password secrets according to the infrastructure topology:
 ```bash
 mv vars_secrets.yaml.example vars_secrets.yaml
 ```
 
-3. **Run the setup script**
-You need to grant execution permissions to the script before running it for the first time:
+3. **Activate the environment**
+
+Activate your new Python virtual environment:
 
 ```bash
-chmod +x setup.sh
-./setup.sh vars_secrets.yaml
+source setup.sh vars_secrets.yaml
 ```
 
-4. **Activate the environment**
-Once the setup finishes successfully, activate your new Python virtual environment:
-```bash
-source .venv/bin/activate
-```
-
-5. **Run Playbook**
+4. **Run Playbook**
 
 Run to control network topology:
 
