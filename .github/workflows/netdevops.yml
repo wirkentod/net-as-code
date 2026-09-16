@@ -3,12 +3,20 @@ name: Network Automation Deploy
 on:
   push:
     branches:
-      - main  # Se ejecutará automáticamente en cada push a la rama 'main'
+      - main  # It will run automatically on every push to the 'main' branch.
+  workflow_dispatch:
+  
+# Automatically cancels old executions if the runner was shut down.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ansible-deploy:
-    # Fuerza al pipeline a correr exclusivamente en tu Host Controller local
+    # Force the pipeline to run exclusively on your local host controller.
     runs-on: [self-hosted, net-control]
+    # Runner disconnected, enable timeout
+    timeout-minutes: 1
 
     steps:
       - name: Checkout Code
