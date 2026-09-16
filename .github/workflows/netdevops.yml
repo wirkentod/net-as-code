@@ -1,0 +1,27 @@
+name: Network Automation Deploy
+
+on:
+  push:
+    branches:
+      - main  # Se ejecutará automáticamente en cada push a la rama 'main'
+
+jobs:
+  ansible-deploy:
+    # Fuerza al pipeline a correr exclusivamente en tu Host Controller local
+    runs-on: [self-hosted, net-control]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Recreate Vault Password File
+        run: |
+          # Reconstruir el archivo de clave temporalmente con los permisos restrictivos 600
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .ansible_vault_pass
+          chmod 600 .ansible_vault_pass
+
+      - name: Run Playbook to Switches
+        run: |
+          # Activar el entorno virtual aislado y lanzar el aprovisionamiento
+          source .venv/bin/activate
+          ansible-playbook site-playbook.yaml -i inventory.yaml -e @vars_secrets.yaml
