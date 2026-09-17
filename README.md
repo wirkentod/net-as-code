@@ -77,12 +77,13 @@ Follow this sequence using your custom application user.
 
 ### Phase 3: CI/CD Runner Orchestration Service Setup
 
-7. **Download & Provision GitHub Actions Agent Package**
+7. **Download & Provision GitHub Actions Agent Package (As `github-runner` User)**
+   Ensure you are still inside `github-runner` session.
    ```bash
    cd ~/
    mkdir actions-runner && cd actions-runner
    
-   # Extract the architecture package and execute interactive self-registration
+   # Add self-hosted runner
    curl -o actions-runner-linux-x64-2.XXX.X.tar.gz -L https://github.com...
    tar xzf ./actions-runner-linux-x64-2.XXX.X.tar.gz
    ./config.sh --url https://github.com... --token YOUR_DYNAMIC_TOKEN --labels net-control
@@ -90,6 +91,7 @@ Follow this sequence using your custom application user.
 
 8. **Register Background Daemon Processes Globally**
    ```bash
+   # Exit the github-runner session to return to host account
    exit
    # Install the service
    sudo -i
