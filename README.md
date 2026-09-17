@@ -11,7 +11,7 @@ Choose the setup path that best fits your active target environment:
 
 | Deployment Path | Target Use Case | Key Features |
 | :--- | :--- | :--- |
-| **Option A: Secure Production Host** | Production controllers and live hardware orchestrators, persistent background CI/CD runner. |
+| **Option A: Production Host** | Production controllers and orchestrators, persistent background CI/CD runner. |
 | **Option B: Local Testing Sandbox** | Local workstations, quick playbook development, and testing. |
 
 ---
@@ -21,10 +21,10 @@ Choose the setup path that best fits your active target environment:
 
 ### Step-by-Step Production Setup
 
-Follow this sequence to isolate execution privileges using your custom application user and enforce directory security boundaries dynamically.
+Follow this sequence using your custom application user.
 
 1. **Clone the repository and run the host initialization script:**
-   The script dynamically detects your current directory path, registers the isolated system user, and locks system permissions.
+   The script dynamically registers the custom application user.
    ```bash
    git clone https://github.com/wirkentod/net-as-code.git
    cd net-as-code
@@ -39,7 +39,7 @@ Follow this sequence to isolate execution privileges using your custom applicati
    ```
 
 3. **Initialize credentials and activate the secure Python environment:**
-   Prepare your local variables from the template and run the setup engine using `source` to automatically spin up your virtual environment and encrypt your secrets file natively via Ansible Vault:
+   Encrypt your secrets file natively via Ansible Vault:
    ```bash
    mv vars_secrets.yaml.example vars_secrets.yaml
    # Edit your real secrets inside vars_secrets.yaml first, then execute:
@@ -52,7 +52,7 @@ Follow this sequence to isolate execution privileges using your custom applicati
    ```
 
 5. **Download and configure the GitHub Actions Runner:**
-   Navigate to your repository page (`Settings -> Actions -> Runners -> New self-hosted runner`), select **Linux**, and execute the setup instructions inside the runner's home path. Ensure you assign the mandatory label `net-control`:
+   Ensure you assign the mandatory label `net-control`:
    ```bash
    mkdir ~/actions-runner && cd ~/actions-runner
    # Extract and download the official agent package (Use your unique URL/Token from GitHub)
@@ -61,10 +61,11 @@ Follow this sequence to isolate execution privileges using your custom applicati
    ./config.sh --url https://github.com... --token YOUR_DYNAMIC_TOKEN --labels net-control
    ```
 
-6. **Install and enable the persistent background daemon (Service):**
+6. **Install and enable the service:**
    ```bash
    exit
-   # Use the dynamic home path shortcut of your custom runner user to install the service
+   # Install the service
+   sudo -i
    cd ~github-runner/actions-runner
    sudo ./svc.sh install github-runner
    sudo ./svc.sh start
@@ -76,7 +77,7 @@ Follow this sequence to isolate execution privileges using your custom applicati
 
 ### Quick Local Workstation Configuration
 
-If you are just developing playbooks or running testing cycles directly on your local machine without deploying a persistent background infrastructure.
+If you are just developing playbooks or running testing cycles directly on your local machine.
 
 1. **Clone the repository and navigate to the folder:**
    ```bash
@@ -87,6 +88,7 @@ If you are just developing playbooks or running testing cycles directly on your 
 2. **Prepare and update your variable secrets:**
    ```bash
    mv vars_secrets.yaml.example vars_secrets.yaml
+   # Edit your real secrets inside vars_secrets.yaml first, then execute:
    ```
 
 3. **Initialize the local virtual environment and dependencies:**
