@@ -2,16 +2,29 @@
 
 This project explores network control as code.
 
-Quick start & Deployment Guide
+---
 
-Depending on your target environment, you can either provision a self-hosted GitHub agent or spin up the environment quickly for local testing.
 
-### Option A: Secure Production Host Provisioning (Recommended)
+## 🚀 Deployment Modes
 
-Follow this sequence to isolate execution privileges using your custom application user (e.g., `github-runner`) and enforce directory security boundaries (`chmod 700`).
+Choose the setup path that best fits your active target environment:
+
+| Deployment Path | Target Use Case | Key Features |
+| :--- | :--- | :--- |
+| **Option A: Secure Production Host** | Production controllers and live hardware orchestrators, persistent background CI/CD runner. |
+| **Option B: Local Testing Sandbox** | Local workstations, quick playbook development, and testing. |
+
+---
+
+<details>
+<summary>📋 <b>Click to expand — Option A: Secure Production Host Provisioning (Recommended)</b></summary>
+
+### Step-by-Step Production Setup
+
+Follow this sequence to isolate execution privileges using your custom application user and enforce directory security boundaries dynamically.
 
 1. **Clone the repository and run the host initialization script:**
-   The script automatically detects your current directory, registers the system user, and locks permissions.
+   The script dynamically detects your current directory path, registers the isolated system user, and locks system permissions.
    ```bash
    git clone https://github.com/wirkentod/net-as-code.git
    cd net-as-code
@@ -20,15 +33,13 @@ Follow this sequence to isolate execution privileges using your custom applicati
    ```
 
 2. **Switch contexts to your secure user and navigate to the project directory dynamically:**
-   Save the current project location in a temporary variable so you can change to the secure user context and return to the exact same path instantly:
    ```bash
-   # Save path, switch user, and return to the exact same directory
    CURRENT_PATH=$PWD
    sudo -i -u github-runner cd "$CURRENT_PATH"
    ```
 
-3. **Initialize credentials and activate the secure python environment:**
-   Prepare your local variables from the template and run the setup engine using `source` to automatically create the virtual environment and encrypt your secrets file natively via Ansible Vault:
+3. **Initialize credentials and activate the secure Python environment:**
+   Prepare your local variables from the template and run the setup engine using `source` to automatically spin up your virtual environment and encrypt your secrets file natively via Ansible Vault:
    ```bash
    mv vars_secrets.yaml.example vars_secrets.yaml
    # Edit your real secrets inside vars_secrets.yaml first, then execute:
@@ -41,38 +52,31 @@ Follow this sequence to isolate execution privileges using your custom applicati
    ```
 
 5. **Download and configure the GitHub Actions Runner:**
-   While logged in as the secure user, go to your GitHub Repository web page (`Settings -> Actions -> Runners -> New self-hosted runner`), select **Linux**, and execute the provided download commands inside the runner's home path. Remember to assign the mandatory label `net-control`:
+   Navigate to your repository page (`Settings -> Actions -> Runners -> New self-hosted runner`), select **Linux**, and execute the setup instructions inside the runner's home path. Ensure you assign the mandatory label `net-control`:
    ```bash
-   # Create and enter the installation folder inside the runner's home directory
    mkdir ~/actions-runner && cd ~/actions-runner
-
-   # Download and extract the official agent package (Use the exact URL from your GitHub screen)
+   # Extract and download the official agent package (Use your unique URL/Token from GitHub)
    curl -o actions-runner-linux-x64-2.XXX.X.tar.gz -L https://github.com...
    tar xzf ./actions-runner-linux-x64-2.XXX.X.tar.gz
-
-   # Register and bind the agent securely to your repository
    ./config.sh --url https://github.com... --token YOUR_DYNAMIC_TOKEN --labels net-control
    ```
 
 6. **Install and enable the persistent background daemon (Service):**
-   Type `exit` to leave the secure user session back to your administrator profile.
    ```bash
-   # Exit to return to your sudo user context
    exit
-
-   # Navigate directly to the installation folder using the dynamic home path of your custom runner user
-   # Replace 'github-runner' with the name you chose in Step 1 if different
+   # Use the dynamic home path shortcut of your custom runner user to install the service
    cd ~github-runner/actions-runner
-
-   # Provision and start the background service securely
    sudo ./svc.sh install github-runner
    sudo ./svc.sh start
    ```
----
+</details>
 
-### Option B: Standard Local Environment Setup
+<details>
+<summary>💻 <b>Click to expand — Option B: Standard Local Environment Setup</b></summary>
 
-If you are just developing playbooks or running testing cycles directly on your local workstation without registering a GitHub Runner agent.
+### Quick Local Workstation Configuration
+
+If you are just developing playbooks or running testing cycles directly on your local machine without deploying a persistent background infrastructure.
 
 1. **Clone the repository and navigate to the folder:**
    ```bash
@@ -94,6 +98,9 @@ If you are just developing playbooks or running testing cycles directly on your 
    ```bash
    ansible-playbook site-playbook.yaml -i inventory.yaml -e @vars_secrets.yaml
    ```
+</details>
+
+---
 
 ## 📂 Project Structure
 
