@@ -34,20 +34,15 @@ fi
 
 echo "2. Target project directory detected at: $PROJECT_DIR"
 
-echo "3. Securing directory and applying strict permissions for user '$RUNNER_USER'..."
-# Change ownership exclusively to the dynamic user and their primary group
+echo "3. Securing directory and applying strict ownership for user '$RUNNER_USER'..."
+# Change owner
 chown -R "$RUNNER_USER":"$RUNNER_USER" "$PROJECT_DIR"
 
-# Enforce strict exclusive access to the project root folder (chmod 700)
-chmod 700 "$PROJECT_DIR"
-
 echo "4. Normalizing internal files and folder structure permissions..."
-# Standard secure file permissions (644) and directory navigation permissions (755)
 find "$PROJECT_DIR" -type f -exec chmod 644 {} +
 find "$PROJECT_DIR" -type d -exec chmod 755 {} +
 
 echo "5. Restoring execution bits to critical tools and scripts..."
-# Re-enable execution permissions exclusively for scripts and the virtual env binaries
 if [ -f "$PROJECT_DIR/setup.sh" ]; then
     chmod +x "$PROJECT_DIR/setup.sh"
 fi
@@ -56,10 +51,5 @@ if [ -d "$PROJECT_DIR/.venv/bin" ]; then
     chmod -R +x "$PROJECT_DIR/.venv/bin/"
 fi
 
-echo "--------------------------------------------------"
-echo "Hardening complete. The directory '$PROJECT_DIR' is now secure."
-echo "   Next step: Switch context to your secure user and complete setup:"
-echo "   sudo -i -u $RUNNER_USER"
-echo "   cd $PROJECT_DIR"
-echo "   source setup.sh vars_secrets.yaml"
-echo "--------------------------------------------------"
+echo "6. Enforcing strict exclusive access to the project root folder (LOCKDOWN)"
+chmod 700 "$PROJECT_DIR"
