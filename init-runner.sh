@@ -29,6 +29,7 @@ if id "$RUNNER_USER" &>/dev/null; then
 else
     echo "Creating isolated system user: $RUNNER_USER..."
     useradd -m -s /bin/bash "$RUNNER_USER"
+    chown -R "$RUNNER_USER":"$RUNNER_USER" "/home/$RUNNER_USER"
     echo "User '$RUNNER_USER' created successfully."
 fi
 
