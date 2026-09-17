@@ -29,8 +29,14 @@ if id "$RUNNER_USER" &>/dev/null; then
 else
     echo "Creating isolated system user: $RUNNER_USER..."
     useradd -m -s /bin/bash "$RUNNER_USER"
-    chown -R "$RUNNER_USER":"$RUNNER_USER" "/home/$RUNNER_USER"
     echo "User '$RUNNER_USER' created successfully."
+fi
+
+if [ ! -d "/home/$RUNNER_USER" ]; then
+    echo "Forcing creation of missing home directory for $RUNNER_USER..."
+    mkdir -p "/home/$RUNNER_USER"
+    chown -R "$RUNNER_USER":"$RUNNER_USER" "/home/$RUNNER_USER"
+    chmod 750 "/home/$RUNNER_USER"
 fi
 
 echo "2. Target project directory detected at: $PROJECT_DIR"

@@ -23,45 +23,72 @@ Choose the setup path that best fits your active target environment:
 
 Follow this sequence using your custom application user.
 
-1. **Clone the repository and run the host initialization script:**
-   The script dynamically registers the custom application user.
+### Phase 1: Local Preparation & System Provisioning (As `ubuntu` User)
+1. **Clone the Repository & Configure Initial Secrets**
    ```bash
    git clone https://github.com/wirkentod/net-as-code.git
    cd net-as-code
+   
+   # Generate your secrets file and apply credentials
+   mv vars_secrets.yaml.example vars_secrets.yaml
+   # Edit your real secrets inside vars_secrets.yaml first, then execute:
+   ```
+
+2. **Relocate Project & Install Base Core Dependencies**
+   Migrate the repository to the global production hierarchy and install core system utilities:
+   ```bash
+   cd ..
+   sudo mv net-as-code /opt/
+   cd /opt/net-as-code
+   
+   # Synchronize packages and provision global runtimes
+   sudo apt update && sudo apt install -y python3-venv python3-pip sshpass
+   ```
+
+3. **Initialize Isolated Security Hardening**
+   ```bash
    chmod +x init-runner.sh
    sudo ./init-runner.sh github-runner
    ```
+---
 
-2. **Switch contexts to your secure user and navigate to the project directory dynamically:**
+### Phase 2: Environment Initialization & Verification (As `github-runner` User)
+
+4. **Establish Secure Session Context**
+   Switch execution context:
    ```bash
    CURRENT_PATH=$PWD
-   sudo -i -u github-runner cd "$CURRENT_PATH"
+   sudo -i -u github-runner
+   cd "$CURRENT_PATH"
    ```
 
-3. **Initialize credentials and activate the secure Python environment:**
-   Encrypt your secrets file natively via Ansible Vault:
+5. **Build Python Virtual Environment & Native Encryption**
+   Deploy runtime virtual dependencies locally:
    ```bash
-   mv vars_secrets.yaml.example vars_secrets.yaml
-   # Edit your real secrets inside vars_secrets.yaml first, then execute:
    source setup.sh vars_secrets.yaml
    ```
 
-4. **Verify execution manually before automation:**
+6. **Validate Playbook Execution State**
    ```bash
+   source .venv/bin/activate
    ansible-playbook site-playbook.yaml -i inventory.yaml -e @vars_secrets.yaml
    ```
+---
 
-5. **Download and configure the GitHub Actions Runner:**
-   Ensure you assign the mandatory label `net-control`:
+### Phase 3: CI/CD Runner Orchestration Service Setup
+
+7. **Download & Provision GitHub Actions Agent Package**
    ```bash
-   mkdir ~/actions-runner && cd ~/actions-runner
-   # Extract and download the official agent package (Use your unique URL/Token from GitHub)
+   cd ~/
+   mkdir actions-runner && cd actions-runner
+   
+   # Extract the architecture package and execute interactive self-registration
    curl -o actions-runner-linux-x64-2.XXX.X.tar.gz -L https://github.com...
    tar xzf ./actions-runner-linux-x64-2.XXX.X.tar.gz
    ./config.sh --url https://github.com... --token YOUR_DYNAMIC_TOKEN --labels net-control
    ```
 
-6. **Install and enable the service:**
+8. **Register Background Daemon Processes Globally**
    ```bash
    exit
    # Install the service
@@ -93,6 +120,7 @@ If you are just developing playbooks or running testing cycles directly on your 
 
 3. **Initialize the local virtual environment and dependencies:**
    ```bash
+   chmod +x setup.sh
    source setup.sh vars_secrets.yaml
    ```
 
