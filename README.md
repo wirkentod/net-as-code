@@ -9,8 +9,8 @@ This project explores network control as code.
 
 Choose the setup path that best fits your active target environment:
 
-| Deployment Path | Target Use Case | Key Features |
-| :--- | :--- | :--- |
+| Deployment Path | Target Use Case |
+| :--- | :--- |
 | **Option A: Production Host** | Production controllers and orchestrators, persistent background CI/CD runner. |
 | **Option B: Local Testing Sandbox** | Local workstations, quick playbook development, and testing. |
 
